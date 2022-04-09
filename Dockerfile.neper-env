@@ -13,4 +13,6 @@ RUN git clone https://github.com/rquey/neper.git && \
 	cd /neper && \
 	cmake /neper/src/ && \
 	make -j "$(nproc)" && \
-	make install
+	make install && \
+	cd / && \
+	rm -rf /neper
