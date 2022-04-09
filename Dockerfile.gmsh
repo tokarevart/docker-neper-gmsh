@@ -1,0 +1,56 @@
+FROM ubuntu AS builder
+
+ENV DEBIAN_FRONTEND noninteractive
+RUN apt-get update && apt-get install -y \
+  cmake \
+  g++ \
+  gfortran \
+  git \
+  libopenblas-dev \
+  liblapack-dev \
+  libgl1-mesa-dev \
+  libxi-dev \
+  libxmu-dev \
+  mesa-common-dev \
+  tcl-dev \
+  tk-dev \
+  wget \
+  libocct-data-exchange-dev \
+  libocct-draw-dev \
+  libocct-foundation-dev \
+  libocct-modeling-algorithms-dev \
+  libocct-ocaf-dev \
+  libocct-visualization-dev \
+  && rm -rf /var/lib/apt/lists/*
+
+ENV GMSHPATH /root/gmsh
+WORKDIR $GMSHPATH
+
+RUN git clone https://gitlab.onelab.info/gmsh/gmsh.git gmsh
+
+RUN cd gmsh \
+  && mkdir build \
+  && cd build \
+  && cmake .. \
+  && make -j "$(nproc)" \
+  && make install
+
+
+FROM ubuntu
+
+ENV DEBIAN_FRONTEND noninteractive
+RUN apt-get update && apt-get install -y \
+  liblapack-dev \
+  tcl-dev \
+  tk-dev \
+  libocct-data-exchange-dev \
+  libocct-draw-dev \
+  libocct-foundation-dev \
+  libocct-modeling-algorithms-dev \
+  libocct-ocaf-dev \
+  libocct-visualization-dev
+
+RUN mkdir -p /usr/local
+COPY --from=builder /usr/local /usr/local
+
+ENV LD_LIBRARY_PATH="/usr/local/lib:${LD_LIBRARY_PATH}"

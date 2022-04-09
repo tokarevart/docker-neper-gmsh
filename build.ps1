@@ -1,0 +1,1 @@
+docker build $($args[1]) -f Dockerfile.$($args[0]) -t tokarevart/$($args[0]) .
