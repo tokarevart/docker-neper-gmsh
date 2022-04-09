@@ -1,5 +1,5 @@
 if ( $($args.Count) -gt 0 ) {
-    docker run -it --rm -v ${pwd}:/home tokarevart/neper sh $args
+    docker run -it --rm -v ${pwd}:/home tokarevart/neper-env sh $args
 } else {
-    docker run -it --rm -v ${pwd}:/home tokarevart/neper
+    docker run -it --rm -v ${pwd}:/home tokarevart/neper-env
 }
