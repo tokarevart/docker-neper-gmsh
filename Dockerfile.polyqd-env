@@ -1,4 +1,4 @@
-FROM tokarevart/neper-env
+FROM tokarevart/neper-env AS builder
 
 RUN apt-get update && apt-get install curl && \ 
     curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y
@@ -6,5 +6,11 @@ RUN apt-get update && apt-get install curl && \
 ENV PATH="/root/.cargo/bin:${PATH}"
 
 RUN cargo install --git https://github.com/tokarevart/polyqd.git
+
+#
+
+FROM tokarevart/neper-env
+
+COPY --from=builder /root/.cargo/bin/polyqd /usr/local/bin
 
 WORKDIR /home
